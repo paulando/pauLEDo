@@ -20,7 +20,6 @@ import axios from 'axios'
 export default {
   methods: {
     handleColor(color) {
-        console.log("192.168.4.1/"+color)
         axios
       .get("http://192.168.4.1/"+color)
       .then(function (response) {
