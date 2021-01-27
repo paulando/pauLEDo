@@ -48,6 +48,20 @@ export default {
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {},
 
+  pwa: {
+    workbox: {
+      workboxVersion: '0.2',
+      autoRegister: true,
+      offline: true,
+    },
+    manifest: {
+      name: 'pauLEDo',
+      short_name: 'pauLEDo',
+      lang: 'en',
+      display: 'standalone',
+    },
+  },
+
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
     postcss: {

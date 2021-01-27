@@ -1,37 +1,96 @@
 <template>
   <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">pauLEDo</h1>
-      <p>Choose color:</p>
-      <div>
-        <button @click="handleColor('red')">Red</button>
-        <button @click="handleColor('green')">Green</button>
-        <button @click="handleColor('blue')">Blue</button>
-        <button @click="handleColor('')">White</button>
-      </div>
+    <h1 class="title">pau<span class="led">LED</span>o</h1>
+    <color-picker
+      class="color-wheel"
+      :start-color="$store.state.color"
+      @color-change="handleColor"
+    ></color-picker>
+    <button
+      class="btn"
+      :style="'background-color:' + $store.state.color"
+      @click="handleStick"
+    >
+      Update Stick
+    </button>
+    <AddToFavorites />
+    <div class="color-values">
+      <p>HEX: {{ $store.state.color }}</p>
+      <p>RGB: {{ hexToRgb($store.state.color) }}</p>
     </div>
+    <button
+      :class="['menu', { opened: $store.state.menu }]"
+      @click="handleMenu"
+    >
+      <svg width="100" height="100" viewBox="0 0 100 100">
+        <path
+          class="line line1"
+          d="M 20,29.000046 H 80.000231 C 80.000231,29.000046 94.498839,28.817352 94.532987,66.711331 94.543142,77.980673 90.966081,81.670246 85.259173,81.668997 79.552261,81.667751 75.000211,74.999942 75.000211,74.999942 L 25.000021,25.000058"
+        />
+        <path class="line line2" d="M 20,50 H 80" />
+        <path
+          class="line line3"
+          d="M 20,70.999954 H 80.000231 C 80.000231,70.999954 94.498839,71.182648 94.532987,33.288669 94.543142,22.019327 90.966081,18.329754 85.259173,18.331003 79.552261,18.332249 75.000211,25.000058 75.000211,25.000058 L 25.000021,74.999942"
+        />
+      </svg>
+    </button>
+    <Menu />
   </div>
 </template>
 
 <script>
 /* eslint-disable */
-import axios from 'axios'
+import axios from 'axios';
+import { mapMutations } from 'vuex';
+import ColorPicker from 'vue-color-picker-wheel';
+import AddToFavorites from '../components/AddToFavorites';
+import Menu from '../components/Menu';
+
 export default {
-  methods: {
-    handleColor(color) {
-        axios
-      .get("http://192.168.4.1/"+color)
-      .then(function (response) {
-        // handle success
-        console.log(response)
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error)
-      })
+  components: {
+    ColorPicker,
+    AddToFavorites,
+    Menu,
+  },
+  data() {
+    return {
+      color: this.$store.state.color,
     }
   },
+  methods: {
+    handleColor(curretColor) {
+      this.$store.commit('update', curretColor)
+    },
+    handleMenu(menu) {
+      this.$store.commit('toggleMenu', menu)
+    },
+    hexToRgb(hex) {
+      return hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i,
+        (m, r, g, b) => '#' + r + r + g + g + b + b)
+        .substring(1).match(/.{2}/g)
+        .map(x => parseInt(x, 16))
+    },
+    handleStick() {
+      const rgb = this.hexToRgb(this.$store.state.color);
+      const route = `http://${this.$store.state.ip}/?r=${rgb[0]}&g=${rgb[1]}&b=${rgb[2]}`
+      console.log(route)
+      axios
+        .get(route)
+        .then(function (response) {
+          // handle success
+          console.log(response)
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error)
+        })
+    },
+  },
+  mounted() {
+    this.$store.commit('updateColorFromLocalStorage')
+    this.$store.commit('updateFavoritesFromLocalStorage')
+    this.$store.commit('isAlreadyFavorited', this.$store.state.color)
+  }
 }
 </script>
 
@@ -43,6 +102,7 @@ export default {
   justify-content: center;
   align-items: center;
   text-align: center;
+  flex-direction: column;
 }
 
 .title {
@@ -50,20 +110,86 @@ export default {
     'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   display: block;
   font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
+  font-size: 5rem;
+  color: #40f4cb;
   letter-spacing: 1px;
 }
 
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
+.btn {
+  margin-top: 1rem;
+  padding: 1rem 3rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  border: 1px solid #ddd;
 }
 
-.links {
-  padding-top: 15px;
+.btn:focus {
+  border: 1px solid #aaa;
+}
+
+.led {
+  background-color: black;
+  background-image: linear-gradient(90deg, #1de0fb, #f27dc9);
+  background-size: 100%;
+  background-repeat: repeat;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; 
+  -moz-background-clip: text;
+  -moz-text-fill-color: transparent;
+}
+
+.color-wheel {
+  margin-top: 2rem;
+}
+
+.color-values {
+  margin-bottom: 2rem;
+}
+
+.menu {
+  position: fixed;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  padding: 0;
+  transform: scale(0.5);
+  z-index: 300;
+}
+.line {
+  fill: none;
+  stroke: black;
+  stroke-width: 6;
+  transition: stroke-dasharray 600ms cubic-bezier(0.4, 0, 0.2, 1),
+    stroke-dashoffset 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.line1 {
+  stroke-dasharray: 60 207;
+  stroke-width: 6;
+}
+.line2 {
+  stroke-dasharray: 60 60;
+  stroke-width: 6;
+}
+.line3 {
+  stroke-dasharray: 60 207;
+  stroke-width: 6;
+}
+.opened .line1 {
+  stroke-dasharray: 90 207;
+  stroke-dashoffset: -134;
+  stroke-width: 6;
+}
+.opened .line2 {
+  stroke-dasharray: 1 60;
+  stroke-dashoffset: -30;
+  stroke-width: 6;
+}
+.opened .line3 {
+  stroke-dasharray: 90 207;
+  stroke-dashoffset: -134;
+  stroke-width: 6;
 }
 </style>

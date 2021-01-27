@@ -1,7 +1,6 @@
 {
   "name": "pauLEDo",
   "short_name": "pauLEDo",
-  "description": "## Build Setup",
   "icons": [
     {
       "src": "/pauLEDo/_nuxt/icons/icon_64x64.5f6a36.png",
