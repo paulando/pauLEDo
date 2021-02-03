@@ -1,5 +1,6 @@
 <template>
   <aside :class="[{ active: $store.state.menu }]">
+    <h1 class="title">pau<span class="led">LED</span>o</h1>
     <h2>Settings</h2>
     <label for="ip">IP: </label>
     <input id="ip" name="ip" type="text" :value="$store.state.ip" />
@@ -38,6 +39,17 @@ export default {
 </script>
 
 <style scoped>
+.title {
+  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  display: block;
+  font-weight: 400;
+  font-size: 2rem;
+  color: #40f4cb;
+  letter-spacing: 1px;
+  margin-top: 2rem;
+}
+
 aside {
   position: fixed;
   top: 0;

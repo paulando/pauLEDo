@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    <h1 class="title">pau<span class="led">LED</span>o</h1>
     <color-picker
       class="color-wheel"
       :start-color="$store.state.color"
@@ -103,16 +102,6 @@ export default {
   align-items: center;
   text-align: center;
   flex-direction: column;
-}
-
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 5rem;
-  color: #40f4cb;
-  letter-spacing: 1px;
 }
 
 .btn {
