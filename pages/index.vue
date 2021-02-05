@@ -127,6 +127,7 @@ export default {
   background-image: linear-gradient(90deg, #1de0fb, #f27dc9);
   background-size: 100%;
   background-repeat: repeat;
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent; 
   -moz-background-clip: text;
