@@ -26,7 +26,7 @@ export default {
   width: 50px;
   margin: 0 auto;
   cursor: pointer;
-  background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/66955/web_heart_animation.png');
+  background-image: url('../assets/web_heart_animation.png');
 }
 
 .animate {

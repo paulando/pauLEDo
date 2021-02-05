@@ -71,8 +71,14 @@ export default {
     },
     handleStick() {
       const rgb = this.hexToRgb(this.$store.state.color);
-      const route = `http://${this.$store.state.ip}/?r=${rgb[0]}&g=${rgb[1]}&b=${rgb[2]}`
+      let route = `http://${this.$store.state.ip}/?r=${rgb[0]}&g=${rgb[1]}&b=${rgb[2]}`
+      console.log('COLOR', this.$store.state.color)
+
+      if (this.$store.state.color === '#ffffff') {
+        route = `http://${this.$store.state.ip}/?w=1`
+      }
       console.log(route)
+
       axios
         .get(route)
         .then(function (response) {

@@ -1,9 +1,9 @@
 <template>
   <aside :class="[{ active: $store.state.menu }]">
     <h1 class="title">pau<span class="led">LED</span>o</h1>
-    <h2>Settings</h2>
+    <!-- <h2>Settings</h2>
     <label for="ip">IP: </label>
-    <input id="ip" name="ip" type="text" :value="$store.state.ip" />
+    <input id="ip" name="ip" type="text" :value="$store.state.ip" /> -->
     <h2>Favorites</h2>
     <div v-for="(item, i) in $store.state.favorites" :key="i">
       <button
