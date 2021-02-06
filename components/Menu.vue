@@ -13,17 +13,17 @@
       />
       <span class="slider round"></span>
     </label>
-    <div v-if="$store.state.splitStick">
+    <!-- <div v-if="$store.state.splitStick">
       <p>Set Second Color</p>
       <label class="switch">
         <input
           type="checkbox"
           :checked="$store.state.setSecondColor"
-          @click="$store.commit('setSecondColor')"
+          @click="$store.commit('toggleSecondColor')"
         />
         <span class="slider round"></span>
       </label>
-    </div>
+    </div> -->
     <h2>Favorites</h2>
     <div v-for="(item, i) in $store.state.favorites" :key="i">
       <button

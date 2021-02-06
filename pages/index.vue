@@ -5,33 +5,31 @@
       :start-color="$store.state.color"
       @color-change="handleColor"
     ></color-picker>
-    <button
-      class="btn"
-      :style="'background-color:' + buttonBackground"
-      @click="handleStick"
-    >
-      Update Stick
-    </button>
+    <div class="dflex">
+      <button
+        v-if="$store.state.splitStick"
+        class="color-square"
+        :style="'background-color:' + $store.state.color"
+        @click="handleSecondColor(false)"
+      ></button>
+      <button
+        class="btn"
+        :style="'background-color:' + buttonBackground"
+        @click="handleStick"
+      >
+        Update Stick
+      </button>
+      <button
+        v-if="$store.state.splitStick"
+        class="color-square"
+        :style="'background-color:' + $store.state.color2"
+        @click="handleSecondColor(true)"
+      ></button>
+    </div>
     <AddToFavorites />
     <div class="color-values">
       <p>HEX: {{ $store.state.color }}</p>
       <p>RGB: {{ hexToRgb($store.state.color) }}</p>
-      <div v-if="$store.state.splitStick">
-        <p class="dflex">
-          Color 1:
-          <span
-            class="color-square"
-            :style="'background-color:' + $store.state.color"
-          ></span>
-        </p>
-        <p class="dflex">
-          Color 2:
-          <span
-            class="color-square"
-            :style="'background-color:' + $store.state.color2"
-          ></span>
-        </p>
-      </div>
     </div>
     <button
       :class="['menu', { opened: $store.state.menu }]"
@@ -81,6 +79,9 @@ export default {
         this.$store.commit('update', curretColor)
       }
     },
+    handleSecondColor(value) {
+      this.$store.commit('setSecondColor', value)
+    },
     handleMenu(menu) {
       this.$store.commit('toggleMenu', menu)
     },
@@ -119,7 +120,7 @@ export default {
   },
   computed: {
     buttonBackground() {
-      return this.$store.state.splitStick && this.$store.state.setSecondColor ? this.$store.state.color2 : this.$store.state.color
+      return this.$store.state.splitStick ? '#ffffff' : this.$store.state.color
     },
   },
   mounted() {
@@ -149,10 +150,10 @@ export default {
 }
 
 .btn {
-  margin-top: 1rem;
-  padding: 1rem 3rem;
+  padding: 1rem;
   text-transform: uppercase;
   font-weight: 600;
+  min-width: 10rem;
   border: 1px solid #ddd;
 }
 
@@ -165,14 +166,23 @@ export default {
 }
 
 .color-values {
+  border-top: 1px solid #efefef;
+  margin-top: 1rem;
+  padding-top: 0.5rem;
   margin-bottom: 2rem;
 }
 
 .color-square {
-  display: inline-block;
-  height: 2rem;
-  width: 2rem;
-  margin-left: 1rem;
+  display: block;
+  height: 2.5rem;
+  width: 2.5rem;
+  margin: 0 1rem;
+  padding: 0;
+  border: 1px solid #ddd;
+}
+
+.color-square:focus {
+  border: 1px solid #bbb;
 }
 
 .menu {

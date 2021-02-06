@@ -24,8 +24,11 @@ export const mutations = {
     state.splitStick = !state.splitStick
     state.setSecondColor = state.splitStick ? state.setSecondColor : false
   },
-  setSecondColor(state) {
+  toggleSecondColor(state) {
     state.setSecondColor = !state.setSecondColor
+  },
+  setSecondColor(state, value) {
+    state.setSecondColor = value
   },
   toggleMenu(state, menu) {
     state.menu = !state.menu
