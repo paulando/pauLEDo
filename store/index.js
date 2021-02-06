@@ -1,6 +1,9 @@
 export const state = () => ({
   ip: '192.168.4.1',
   color: '#ffffff',
+  color2: '#ffffff',
+  splitStick: false,
+  setSecondColor: false,
   menu: false,
   favorited: false,
   favorites: [],
@@ -11,6 +14,18 @@ export const mutations = {
     state.color = color
     window.localStorage.color = state.color
     this.commit('isAlreadyFavorited', color)
+  },
+  update2(state, color) {
+    state.color2 = color
+    window.localStorage.color2 = color
+    // this.commit('isAlreadyFavorited', color)
+  },
+  splitStick(state) {
+    state.splitStick = !state.splitStick
+    state.setSecondColor = state.splitStick ? state.setSecondColor : false
+  },
+  setSecondColor(state) {
+    state.setSecondColor = !state.setSecondColor
   },
   toggleMenu(state, menu) {
     state.menu = !state.menu

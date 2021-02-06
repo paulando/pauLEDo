@@ -7,7 +7,7 @@
     ></color-picker>
     <button
       class="btn"
-      :style="'background-color:' + $store.state.color"
+      :style="'background-color:' + buttonBackground"
       @click="handleStick"
     >
       Update Stick
@@ -16,6 +16,22 @@
     <div class="color-values">
       <p>HEX: {{ $store.state.color }}</p>
       <p>RGB: {{ hexToRgb($store.state.color) }}</p>
+      <div v-if="$store.state.splitStick">
+        <p class="dflex">
+          Color 1:
+          <span
+            class="color-square"
+            :style="'background-color:' + $store.state.color"
+          ></span>
+        </p>
+        <p class="dflex">
+          Color 2:
+          <span
+            class="color-square"
+            :style="'background-color:' + $store.state.color2"
+          ></span>
+        </p>
+      </div>
     </div>
     <button
       :class="['menu', { opened: $store.state.menu }]"
@@ -58,7 +74,12 @@ export default {
   },
   methods: {
     handleColor(curretColor) {
-      this.$store.commit('update', curretColor)
+      console.log('handleColor', curretColor)
+      if (this.$store.state.setSecondColor) {
+        this.$store.commit('update2', curretColor)
+      } else {
+        this.$store.commit('update', curretColor)
+      }
     },
     handleMenu(menu) {
       this.$store.commit('toggleMenu', menu)
@@ -71,12 +92,17 @@ export default {
     },
     handleStick() {
       const rgb = this.hexToRgb(this.$store.state.color);
+      const rgb2 = this.hexToRgb(this.$store.state.color2);
       let route = `http://${this.$store.state.ip}/?r=${rgb[0]}&g=${rgb[1]}&b=${rgb[2]}`
-      console.log('COLOR', this.$store.state.color)
+
+      if (this.$store.state.splitStick) {
+        route = `http://${this.$store.state.ip}/?r=${rgb[0]}&g=${rgb[1]}&b=${rgb[2]}&r2=${rgb2[0]}&g2=${rgb2[1]}&b2=${rgb2[2]}&split=1`
+      }
 
       if (this.$store.state.color === '#ffffff') {
         route = `http://${this.$store.state.ip}/?w=1`
       }
+
       console.log(route)
 
       axios
@@ -91,6 +117,11 @@ export default {
         })
     },
   },
+  computed: {
+    buttonBackground() {
+      return this.$store.state.splitStick && this.$store.state.setSecondColor ? this.$store.state.color2 : this.$store.state.color
+    },
+  },
   mounted() {
     this.$store.commit('updateColorFromLocalStorage')
     this.$store.commit('updateFavoritesFromLocalStorage')
@@ -102,12 +133,19 @@ export default {
 <style>
 .container {
   margin: 0 auto;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
   flex-direction: column;
+  padding-bottom: 7rem;
+}
+
+.dflex {
+  display: flex;
+  align-items: center;
+  margin: 1rem 0;
 }
 
 .btn {
@@ -122,18 +160,6 @@ export default {
   border: 1px solid #aaa;
 }
 
-.led {
-  background-color: black;
-  background-image: linear-gradient(90deg, #1de0fb, #f27dc9);
-  background-size: 100%;
-  background-repeat: repeat;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; 
-  -moz-background-clip: text;
-  -moz-text-fill-color: transparent;
-}
-
 .color-wheel {
   margin-top: 2rem;
 }
@@ -142,10 +168,17 @@ export default {
   margin-bottom: 2rem;
 }
 
+.color-square {
+  display: inline-block;
+  height: 2rem;
+  width: 2rem;
+  margin-left: 1rem;
+}
+
 .menu {
   position: fixed;
-  right: 0.5rem;
-  bottom: 0.5rem;
+  right: -1rem;
+  bottom: -1rem;
   background-color: transparent;
   border: none;
   cursor: pointer;
